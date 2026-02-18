@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 URL Shortener</h1>
+        <p class="subtitle">Shorten your long URLs in seconds</p>
+        
+        {% if error %}
+        <div class="alert alert-error">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        {% if short_url %}
+        <div class="result-box">
+            <h2>✅ Short URL Created!</h2>
+            <div class="short-url-container">
+                <input type="text" id="shortUrl" value="{{ short_url }}" readonly>
+                <button onclick="copyToClipboard()" class="btn-copy">Copy</button>
+            </div>
+            <p class="original-url">Original: <a href="{{ original_url }}" target="_blank">{{ original_url[:60] }}{% if original_url|length > 60 %}...{% endif %}</a></p>
+            <p class="short-code">Code: <strong>{{ short_code }}</strong></p>
+            <a href="/" class="btn-create-new">Create Another</a>
+        </div>
+        {% else %}
+        <form action="/shorten" method="POST" class="url-form">
+            <div class="form-group">
+                <label for="url">Long URL *</label>
+                <input 
+                    type="text" 
+                    id="url" 
+                    name="url" 
+                    placeholder="https://example.com/very-long-url-here"
+                    value="{{ url if url else '' }}"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="custom_code">
+                    Custom Short Code (optional)
+                    <span class="hint">5-10 characters, letters and numbers only</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="custom_code" 
+                    name="custom_code" 
+                    placeholder="e.g., mylink123"
+                    value="{{ custom_code if custom_code else '' }}"
+                    minlength="5"
+                    maxlength="10"
+                    pattern="[a-zA-Z0-9]+"
+                    title="Only letters and numbers allowed (5-10 characters)"
+                >
+            </div>
+            
+            <button type="submit" class="btn-submit">Generate Short URL</button>
+        </form>
+        {% endif %}
+        
+        <div class="info">
+            <h3>ℹ️ How it works</h3>
+            <ul>
+                <li>Enter your long URL</li>
+                <li>Leave custom code empty for auto-generated code</li>
+                <li>Or enter your own 5-10 character code</li>
+                <li>Share the short URL!</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function copyToClipboard() {
+            const shortUrlInput = document.getElementById('shortUrl');
+            shortUrlInput.select();
+            shortUrlInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(shortUrlInput.value).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
