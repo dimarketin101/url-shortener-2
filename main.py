@@ -28,6 +28,10 @@ load_dotenv()
 BASE_DOMAIN = os.getenv("BASE_DOMAIN", "http://localhost:8000")
 MAX_GENERATION_ATTEMPTS = 100  # Prevent infinite loops
 
+# Create directories if they don't exist (for deployment safety)
+os.makedirs("static", exist_ok=True)
+os.makedirs("templates", exist_ok=True)
+
 # Setup FastAPI
 app = FastAPI(
     title="URL Shortener",
