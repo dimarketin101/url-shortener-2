@@ -23,6 +23,8 @@ from utils import (
 
 # Load environment variables
 load_dotenv()
+os.makedirs("static", exist_ok=True)
+os.makedirs("templates", exist_ok=True)
 
 # Configuration
 BASE_DOMAIN = os.getenv("BASE_DOMAIN", "http://localhost:8000")
